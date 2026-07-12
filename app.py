@@ -28,9 +28,9 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 SMTP_HOST = os.environ.get("SMTP_HOST", "smtp.gmail.com")
 SMTP_PORT = int(os.environ.get("SMTP_PORT", "587"))
-SMTP_USER = os.environ.get("SMTP_USER", "akkochief@gmail.com")
-SMTP_PASS = os.environ.get("SMTP_PASS", "pkcb sklw ygnw xaes")
-SENDER_NAME = os.environ.get("SENDER_NAME", "Bilgilendirme")
+SMTP_USER = os.environ.get("SMTP_USER", "")
+SMTP_PASS = os.environ.get("SMTP_PASS", "")
+SENDER_NAME = os.environ.get("SENDER_NAME", "Information")
 
 SEND_DELAY_SECONDS = float(os.environ.get("SEND_DELAY_SECONDS", "1.5"))
 
