@@ -40,7 +40,7 @@ def allowed_file(filename: str, allowed_set: set) -> bool:
     return "." in filename and filename.rsplit(".", 1)[1].lower() in allowed_set
 def read_recipients(csv_path: str):
     recipients = []
-    with open(csv_path, newline="", encoding="utf-8-sig") as f:
+    with open(csv_path, newline="", encoding="cp1252") as f:
         reader = csv.DictReader(f)
         if "email" not in [h.strip().lower() for h in reader.fieldnames]:
             raise ValueError("CSV dosyasında 'email' sütunu bulunamadı.")
