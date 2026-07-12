@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Results — SMTP Automated Tool</title>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background: #fafafa;
+    color: #111111;
+    min-height: 100vh;
+    padding: 40px 20px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+  }
+
+  .container {
+    max-width: 860px;
+    width: 100%;
+  }
+
+  .card {
+    background: #ffffff;
+    padding: 40px 48px;
+    border: 1px solid #e0e0e0;
+    border-radius: 0;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+  }
+
+  .back-link {
+    display: inline-block;
+    color: #555555;
+    text-decoration: none;
+    font-size: 14px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s;
+  }
+
+  .back-link:hover {
+    border-bottom-color: #000000;
+    color: #000000;
+  }
+
+  h1 {
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    color: #000000;
+    border-bottom: 2px solid #000000;
+    padding-bottom: 14px;
+    margin-bottom: 20px;
+  }
+
+  .summary {
+    display: flex;
+    gap: 40px;
+    flex-wrap: wrap;
+    padding: 16px 0 20px;
+    border-bottom: 1px solid #ececec;
+    margin-bottom: 24px;
+  }
+
+  .summary-item {
+    font-size: 16px;
+    color: #444444;
+  }
+
+  .summary-item strong {
+    font-weight: 700;
+  }
+
+  .summary-item .success-count {
+    color: #000000;
+  }
+
+  .summary-item .fail-count {
+    color: #000000;
+  }
+
+  .table-wrap {
+    overflow-x: auto;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+
+  thead th {
+    text-align: left;
+    padding: 12px 12px 12px 0;
+    font-weight: 600;
+    color: #000000;
+    border-bottom: 2px solid #000000;
+    background: #f8f8f8;
+  }
+
+  thead th:last-child {
+    padding-right: 0;
+  }
+
+  tbody td {
+    padding: 11px 12px 11px 0;
+    border-bottom: 1px solid #e8e8e8;
+    color: #222222;
+    vertical-align: top;
+  }
+
+  tbody td:last-child {
+    padding-right: 0;
+  }
+
+  tbody tr:hover {
+    background: #f8f8f8;
+  }
+
+  .status-badge {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+  }
+
+  .status-badge.success {
+    color: #000000;
+  }
+
+  .status-badge.failed {
+    color: #000000;
+  }
+
+  .error-text {
+    color: #666666;
+    font-size: 13px;
+    font-family: 'SF Mono', 'Courier New', monospace;
+    word-break: break-all;
+  }
+
+  .empty-text {
+    color: #999999;
+    font-style: italic;
+  }
+
+  .bottom-actions {
+    margin-top: 28px;
+    padding-top: 24px;
+    border-top: 1px solid #ececec;
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .btn {
+    display: inline-block;
+    padding: 11px 28px;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: inherit;
+    color: #ffffff;
+    background: #000000;
+    border: 1.5px solid #000000;
+    border-radius: 0;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    letter-spacing: 0.3px;
+    text-decoration: none;
+  }
+
+  .btn:hover {
+    background: #222222;
+    border-color: #222222;
+  }
+
+  .btn-secondary {
+    background: transparent;
+    color: #000000;
+    border-color: #999999;
+  }
+
+  .btn-secondary:hover {
+    background: #f0f0f0;
+    border-color: #000000;
+  }
+
+  .stats-extra {
+    font-size: 14px;
+    color: #555555;
+  }
+
+  @media (max-width: 600px) {
+    .card {
+      padding: 24px 16px;
+    }
+    h1 {
+      font-size: 22px;
+    }
+    .summary {
+      gap: 16px;
+    }
+    thead th,
+    tbody td {
+      padding: 10px 8px 10px 0;
+      font-size: 13px;
+    }
+    .bottom-actions {
+      flex-direction: column;
+    }
+    .btn {
+      width: 100%;
+      text-align: center;
+    }
+  }
+
+  /* Print-friendly */
+  @media print {
+    body { background: white; padding: 20px; }
+    .card { box-shadow: none; border: 1px solid #ddd; }
+    .btn { display: none; }
+    .bottom-actions { border-top: none; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="card">
+    <a href="/" class="back-link">← Back</a>
+
+    <h1>Delivery Results</h1>
+
+    <div class="summary">
+      <span class="summary-item">
+        ✓ Success: <strong class="success-count">{{ success_count }}</strong>
+      </span>
+      <span class="summary-item">
+        ✗ Failed: <strong class="fail-count">{{ fail_count }}</strong>
+      </span>
+      <span class="summary-item stats-extra">
+        Total: <strong>{{ success_count + fail_count }}</strong>
+      </span>
+    </div>
+
+    {% if results %}
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Email</th>
+            <th>Status</th>
+            <th>Error</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for r in results %}
+          <tr>
+            <td>{{ r.email }}</td>
+            <td>
+              <span class="status-badge {{ 'success' if r.status == 'basarili' else 'failed' }}">
+                {{ '✓ Success' if r.status == 'basarili' else '✗ Failed' }}
+              </span>
+            </td>
+            <td>
+              {% if r.hata %}
+                <span class="error-text">{{ r.hata }}</span>
+              {% else %}
+                <span class="empty-text">—</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <p style="color:#666666; padding:20px 0; text-align:center;">No results to display.</p>
+    {% endif %}
+
+    <div class="bottom-actions">
+      <a href="/" class="btn">Start New Campaign</a>
+      <button onclick="window.print()" class="btn btn-secondary">🖨 Print Results</button>
+    </div>
+  </div>
+</div>
+</body>
+</html>
