@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SMTP Automated Tool</title>
+<style>
+  /* Reset & Base */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background: #fafafa;
+    color: #111111;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .container {
+    max-width: 720px;
+    width: 100%;
+  }
+
+  .card {
+    background: #ffffff;
+    padding: 40px 48px;
+    border: 1px solid #e0e0e0;
+    border-radius: 0;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+    transition: box-shadow 0.2s ease;
+  }
+
+  .card:hover {
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.06);
+  }
+
+  .header-icon {
+    font-size: 32px;
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  h1 {
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    color: #000000;
+    border-bottom: 2px solid #000000;
+    padding-bottom: 14px;
+    margin-bottom: 24px;
+  }
+
+  h1 small {
+    font-size: 14px;
+    font-weight: 400;
+    color: #555555;
+    display: block;
+    margin-top: 4px;
+  }
+
+  /* Flash Messages */
+  .flash {
+    background: #f5f5f5;
+    color: #111111;
+    padding: 12px 16px;
+    border-left: 4px solid #000000;
+    margin-bottom: 20px;
+    font-size: 14px;
+  }
+
+  /* Form Elements */
+  .form-group {
+    margin-bottom: 24px;
+  }
+
+  label {
+    display: block;
+    font-weight: 600;
+    font-size: 14px;
+    color: #000000;
+    margin-bottom: 6px;
+    letter-spacing: -0.2px;
+  }
+
+  label .required {
+    color: #000000;
+    font-weight: 700;
+    margin-left: 2px;
+  }
+
+  input[type="file"],
+  input[type="text"] {
+    width: 100%;
+    padding: 10px 14px;
+    font-size: 14px;
+    font-family: inherit;
+    color: #111111;
+    background: #ffffff;
+    border: 1.5px solid #cccccc;
+    border-radius: 0;
+    outline: none;
+    transition: border-color 0.2s ease;
+  }
+
+  input[type="file"] {
+    padding: 8px 10px;
+    background: #fafafa;
+  }
+
+  input[type="file"]:hover,
+  input[type="text"]:hover {
+    border-color: #888888;
+  }
+
+  input[type="file"]:focus,
+  input[type="text"]:focus {
+    border-color: #000000;
+    background: #ffffff;
+  }
+
+  .hint {
+    color: #666666;
+    font-size: 13px;
+    line-height: 1.6;
+    margin-top: 6px;
+  }
+
+  .hint code {
+    background: #f0f0f0;
+    padding: 2px 8px;
+    font-size: 12px;
+    color: #000000;
+    border: 1px solid #dddddd;
+    font-family: 'SF Mono', 'Courier New', monospace;
+  }
+
+  .hint .example {
+    display: block;
+    background: #f8f8f8;
+    padding: 8px 12px;
+    margin-top: 4px;
+    border: 1px solid #e8e8e8;
+    font-family: 'SF Mono', 'Courier New', monospace;
+    font-size: 12px;
+    color: #333333;
+    overflow-x: auto;
+  }
+
+  /* Button */
+  .btn {
+    display: inline-block;
+    padding: 12px 32px;
+    font-size: 15px;
+    font-weight: 600;
+    font-family: inherit;
+    color: #ffffff;
+    background: #000000;
+    border: 1.5px solid #000000;
+    border-radius: 0;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    letter-spacing: 0.3px;
+  }
+
+  .btn:hover {
+    background: #222222;
+    border-color: #222222;
+  }
+
+  .btn:active {
+    transform: scale(0.98);
+  }
+
+  .btn-secondary {
+    background: transparent;
+    color: #000000;
+    border-color: #999999;
+  }
+
+  .btn-secondary:hover {
+    background: #f0f0f0;
+    border-color: #000000;
+  }
+
+  .btn-block {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+  }
+
+  .form-actions {
+    margin-top: 8px;
+  }
+
+  .divider {
+    border: none;
+    border-top: 1px solid #e8e8e8;
+    margin: 28px 0 8px;
+  }
+
+  /* Responsive */
+  @media (max-width: 600px) {
+    .card {
+      padding: 24px 20px;
+    }
+    h1 {
+      font-size: 22px;
+    }
+    .btn {
+      width: 100%;
+      text-align: center;
+    }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="card">
+    <span class="header-icon">✉</span>
+    <h1>
+      SMTP Automated Tool
+      <small>Personalized email campaigns with CSV data</small>
+    </h1>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for m in messages %}
+          <div class="flash">{{ m }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <form action="/preview" method="post" enctype="multipart/form-data">
+
+      <div class="form-group">
+        <label for="csv_file">1. Recipient List <span class="required">(CSV)</span></label>
+        <input type="file" id="csv_file" name="csv_file" accept=".csv" required>
+        <div class="hint">
+          Columns: <code>email</code> <span style="color:#999;">(required)</span>, followed by any variables:
+          <code>name, x, y, z, ...</code>
+          <span class="example">Example: ahmet@example.com,Ahmet,1,2,3</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="subject">2. Email Subject <span class="required">*</span></label>
+        <input type="text" id="subject" name="subject" placeholder="Hello {name}, your order #{x} is ready" required>
+        <div class="hint">Use placeholders like <code>{name}</code>, <code>{x}</code>, <code>{y}</code> to personalize.</div>
+      </div>
+
+      <div class="form-group">
+        <label for="template_file">3. Email Template <span class="required">(HTML or TXT)</span></label>
+        <input type="file" id="template_file" name="template_file" accept=".html,.htm,.txt" required>
+        <div class="hint">
+          Use <code>{name}</code>, <code>{x}</code>, <code>{y}</code>, <code>{z}</code> placeholders in your template.
+          They will be replaced with actual values from the CSV.
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-block">Preview →</button>
+      </div>
+
+    </form>
+  </div>
+</div>
+</body>
+</html>
